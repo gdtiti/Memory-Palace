@@ -385,10 +385,19 @@ bash scripts/docker_one_click.sh --profile c --allow-runtime-env-injection
 .\scripts\docker_one_click.ps1 -Profile c -AllowRuntimeEnvInjection
 ```
 
+> One-click Docker deployment starts all three parts:
+>
+> - Dashboard: `http://127.0.0.1:3000`
+> - Backend API: `http://127.0.0.1:18000`
+> - SSE: `http://127.0.0.1:3000/sse`
+>
+> If `MCP_API_KEY` is empty in the Docker env file, the profile helper generates a local key automatically. The frontend proxy uses that key on the server side, so users do not need to click `Set API key` just to open the dashboard.
+
 | Service | URL |
 |---|---|
 | Frontend Dashboard | <http://127.0.0.1:3000> |
 | Backend API | <http://127.0.0.1:18000> |
+| SSE | <http://127.0.0.1:3000/sse> |
 | Health Check | <http://127.0.0.1:18000/health> |
 
 > Note: these are default ports. If occupied, the one-click script auto-adjusts ports and prints the actual URLs in console output.
@@ -763,6 +772,7 @@ Real-time search query monitoring, retrieval quality insights, and task queue st
 - All API keys in documentation use placeholders only
 - HTTP/SSE auth is **fail-closed** by default: protected endpoints return `401` when `MCP_API_KEY` is missing or invalid
 - This gate applies only to HTTP/SSE interfaces; `stdio` mode is unaffected
+- Docker one-click deployment forwards auth headers at the server-side proxy, so the browser does not receive the real `MCP_API_KEY`
 - Local bypass requires explicit opt-in: `MCP_API_KEY_ALLOW_INSECURE_LOCAL=true` (loopback only)
 
 Details: [SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md)
@@ -783,7 +793,8 @@ For backward compatibility with legacy `nocturne_memory` deployments:
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/image?repos=AGI-is-going-to-arrive/Memory-Palace&type=timeline&legend=top-left)](https://www.star-history.com/?repos=AGI-is-going-to-arrive%2FMemory-Palace&type=timeline&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=AGI-is-going-to-arrive/Memory-Palace&type=timeline&legend=top-left)](https://www.star-history.com/#AGI-is-going-to-arrive/Memory-Palace&type=timeline&legend=top-left)
+
 ---
 
 ## 📄 License
