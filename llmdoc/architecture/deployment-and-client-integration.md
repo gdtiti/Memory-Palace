@@ -24,6 +24,17 @@
 - `frontend`
   - 仪表盘前端服务，依赖 `backend` 与 `sse`
 
+镜像层面的发布建议也与这里保持一致：
+
+- `backend`
+  - 独立发布后端镜像
+- `frontend`
+  - 独立发布前端镜像
+- `sse`
+  - 继续复用 `backend` 镜像，通过运行命令覆盖为 `python run_sse.py`
+
+这样可以避免为 `sse` 维护一份与 `backend` 基本重复的镜像。
+
 关键环境入口：
 
 - `MEMORY_PALACE_DOCKER_ENV_FILE`
@@ -58,6 +69,7 @@
 - `scripts/apply_profile.sh`
 - `scripts/apply_profile.ps1`
 - `scripts/run_memory_palace_mcp_stdio.sh`
+- `.github/workflows/docker-ghcr.yml`
 
 用途：
 
@@ -65,11 +77,18 @@
 - 一键启动 Docker
 - 统一不同平台的部署入口
 - 为 CLI / MCP 注册提供稳定的 stdio 启动脚本
+- 在 GitHub Actions 中构建并推送 `backend` / `frontend` 镜像到 GHCR
 
 额外要点：
 
 - `scripts/docker_one_click.sh`
   - 已包含 deployment lock，避免同一 checkout 并发部署互相踩踏
+- `.github/workflows/docker-ghcr.yml`
+  - 当前默认构建并推送两个镜像：
+    - `ghcr.io/<owner>/memory-palace-backend`
+    - `ghcr.io/<owner>/memory-palace-frontend`
+  - `pull_request` 事件只做构建校验，不推送
+  - `push main`、`push tag(v*)`、`workflow_dispatch` 会推送到 GHCR
 
 ### 交付前检查
 
